@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Vehiculos {
-    private List<Vehiculo> coleccionVehiculos;
+    private final List<Vehiculo> coleccionVehiculos;
 
     public Vehiculos() {
         coleccionVehiculos = new ArrayList<>();
