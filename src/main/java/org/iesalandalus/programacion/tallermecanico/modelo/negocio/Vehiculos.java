@@ -51,7 +51,5 @@ public class Vehiculos {
             throw new OperationNotSupportedException("No existe ningún vehículo con esa matrícula.");
         }
         coleccionVehiculos.remove(indice);
-
-
     }
 }

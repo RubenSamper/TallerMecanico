@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Revision;
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -139,19 +140,19 @@ class RevisionesTest {
         assertEquals("El vehículo está actualmente en revisión.", onse.getMessage());
     }
 
-    @Test
-    void insertarRevisionClienteRevisionAnteiorLanzaExcepcion() {
-        assertDoesNotThrow(() -> revisiones.insertar(revision1));
-        assertDoesNotThrow(() -> revisiones.cerrar(revision1, anteayer));
-        when(revision1.getFechaInicio()).thenReturn(ayer);
-        when(revision1.getFechaFin()).thenReturn(anteayer);
-        when(revision1.estaCerrada()).thenReturn(true);
-        assertDoesNotThrow(() -> revisiones.insertar(revision1));
-        assertDoesNotThrow(() -> revisiones.cerrar(revision1, ayer));
-        when(revision1.getFechaFin()).thenReturn(ayer);
-        OperationNotSupportedException onse = assertThrows(OperationNotSupportedException.class, () -> revisiones.insertar(revision2));
-        assertEquals("El cliente tiene una revisión posterior.", onse.getMessage());
-    }
+        @Test
+        void insertarRevisionClienteRevisionAnteiorLanzaExcepcion() {
+            assertDoesNotThrow(() -> revisiones.insertar(revision1));
+            assertDoesNotThrow(() -> revisiones.cerrar(revision1, anteayer));
+            when(revision1.getFechaInicio()).thenReturn(ayer);
+            when(revision1.getFechaFin()).thenReturn(anteayer);
+            when(revision1.estaCerrada()).thenReturn(true);
+            assertDoesNotThrow(() -> revisiones.insertar(revision1));
+            assertDoesNotThrow(() -> revisiones.cerrar(revision1, ayer));
+            when(revision1.getFechaFin()).thenReturn(ayer);
+            OperationNotSupportedException onse = assertThrows(OperationNotSupportedException.class, () -> revisiones.insertar(revision2));
+            assertEquals("El cliente tiene una revisión posterior.", onse.getMessage());
+        }
 
     @Test
     void insertarRevisionVehiculoRevisionAnteriorLanzaExcepcion() {
