@@ -69,7 +69,6 @@ public class Revisiones {
 
         comprobarRevision(cliente, vehiculo, fechaRevision);
 
-        // Si no se lanzó ninguna excepción, se agrega la revisión a la lista
         coleccionRevisiones.add(revision);
     }
 
