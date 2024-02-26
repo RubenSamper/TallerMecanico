@@ -27,7 +27,7 @@ public class Consola {
     }
 
     public static void mostrarMenu() {
-        mostrarCabecera("Menú de opciones:");
+        mostrarCabecera("Gestión de un taller Mecánico:");
 
         for (Opcion opcion : Opcion.values()) {
             System.out.println(opcion);

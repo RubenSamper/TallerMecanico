@@ -21,35 +21,24 @@ public class Vehiculos {
 
     public void insertar(Vehiculo vehiculo) throws OperationNotSupportedException {
         Objects.requireNonNull(vehiculo, "No se puede insertar un vehículo nulo.");
-
-        int indice = coleccionVehiculos.indexOf(vehiculo);
-        if (indice != -1) {
+        if (coleccionVehiculos.contains(vehiculo)) {
             throw new OperationNotSupportedException("Ya existe un vehículo con esa matrícula.");
         }
-
         coleccionVehiculos.add(vehiculo);
     }
 
     public Vehiculo buscar(Vehiculo vehiculo) {
         Objects.requireNonNull(vehiculo, "No se puede buscar un vehículo nulo.");
         int indice = coleccionVehiculos.indexOf(vehiculo);
-        Vehiculo aux = null;
-
-        if (indice != -1) {
-            aux = coleccionVehiculos.get(indice);
-        }
-
-        return aux;
+        return (indice == -1) ? null : coleccionVehiculos.get(indice);
     }
 
     public void borrar(Vehiculo vehiculo) throws OperationNotSupportedException {
         Objects.requireNonNull(vehiculo, "No se puede borrar un vehículo nulo.");
 
-        int indice = coleccionVehiculos.indexOf(vehiculo);
-
-        if (indice == -1) {
+        if (!coleccionVehiculos.contains(vehiculo)) {
             throw new OperationNotSupportedException("No existe ningún vehículo con esa matrícula.");
         }
-        coleccionVehiculos.remove(indice);
+        coleccionVehiculos.remove(vehiculo);
     }
 }

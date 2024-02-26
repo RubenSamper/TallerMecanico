@@ -3,13 +3,14 @@ package org.iesalandalus.programacion.tallermecanico.modelo.dominio;
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Revision {
-    private static final float PRECIO_HORA = 30.0f;
-    private static final float PRECIO_DIA = 10.0f;
+    private static final float PRECIO_HORA = 30f;
+    private static final float PRECIO_DIA = 10f;
     private static final float PRECIO_MATERIAL = 1.5f;
-    public static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private int horas;
@@ -26,12 +27,12 @@ public class Revision {
 
     public Revision(Revision revision) {
         Objects.requireNonNull(revision, "La revisión no puede ser nula.");
-        this.cliente = new Cliente(revision.getCliente());
-        this.vehiculo = revision.getVehiculo();
-        this.fechaInicio = revision.getFechaInicio();
-        this.fechaFin = revision.getFechaFin();
-        this.horas = revision.getHoras();
-        this.precioMaterial = revision.getPrecioMaterial();
+        cliente = new Cliente(revision.getCliente());
+        vehiculo = revision.vehiculo;
+        fechaInicio = revision.fechaInicio;
+        fechaFin = revision.fechaFin;
+        horas = revision.horas;
+        precioMaterial = revision.precioMaterial;
     }
 
     public LocalDate getFechaInicio() {
@@ -68,8 +69,8 @@ public class Revision {
 
     private void setFechaFin(LocalDate fechaFin) {
         Objects.requireNonNull(fechaFin, "La fecha final no puede ser nula.");
-        if (fechaFin.equals(fechaInicio) || fechaFin.isBefore(fechaInicio)) {
-            throw new IllegalArgumentException("ERROR:");
+        if (fechaFin.isBefore(fechaInicio)) {
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio");
         }
         if (fechaFin.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La fecha de fin no puede ser futura.");
@@ -92,7 +93,7 @@ public class Revision {
             throw new OperationNotSupportedException("No se puede añadir horas, ya que la revisión está cerrada.");
         }
 
-        Objects.requireNonNull(horas, "Las horas no pueden ser nulas.");
+        //Objects.requireNonNull(horas, "Las horas no pueden ser nulas.");
         if (horas <= 0) {
             throw new IllegalArgumentException("Las horas a añadir deben ser mayores que cero.");
         }
@@ -148,12 +149,14 @@ public class Revision {
     }
 
     private float getDias() {
-        if (fechaFin != null) {
+        return (estaCerrada()) ? (int) ChronoUnit.DAYS.between(fechaInicio, fechaFin) : 0;
+      /*  if (fechaFin != null) {
             return (float) fechaInicio.until(fechaFin).getDays();
         } else {
             return 0;
-        }
+        }*/
     }
+
 
     @Override
     public boolean equals(Object o) {

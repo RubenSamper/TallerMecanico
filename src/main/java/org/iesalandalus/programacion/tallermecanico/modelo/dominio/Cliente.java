@@ -4,8 +4,9 @@ import java.util.Objects;
 
 public class Cliente {
     private static final String ER_NOMBRE = "(([A-Z][a-záéíóú]+)( [A-Z][a-záéíóú]+)*)";
+    //[A-ZÁÉÍÓÚ][a-záéíóú]+(?:[A-ZÁÉÍÓÚ][z-áéíóú]+)*+
     private static final String ER_DNI = "\\d{8}[A-Z]";
-    private static final String ER_TELEFONO = "[0-9]{9}";
+    private static final String ER_TELEFONO = "\\d{9}";
 
     private String nombre;
     private String dni;
@@ -19,9 +20,9 @@ public class Cliente {
 
     public Cliente(Cliente cliente) {
         Objects.requireNonNull(cliente, "No es posible copiar un cliente nulo.");
-        setNombre(cliente.getNombre());
-        setDni(cliente.getDni());
-        setTelefono(cliente.getTelefono());
+        nombre = cliente.nombre;
+        dni = cliente.dni;
+        telefono = cliente.telefono;
     }
 
     public String getNombre() {
@@ -91,6 +92,6 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return String.format("%s - %s (%s)", this.nombre, this.dni, this.telefono);
+        return String.format("%s - %s (%s)", nombre, dni, telefono);
     }
 }

@@ -11,6 +11,7 @@ import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Modelo {
     private Clientes clientes;
@@ -32,29 +33,34 @@ public class Modelo {
     }
 
     public void insertar(Cliente cliente) throws OperationNotSupportedException {
+        Objects.requireNonNull(cliente, "No puedo insertar un cliente nulo.");
         clientes.insertar(new Cliente(cliente));
     }
 
     public void insertar(Vehiculo vehiculo) throws OperationNotSupportedException {
+        Objects.requireNonNull(vehiculo, "No puedo insertar un vehiculo nulo.");
         vehiculos.insertar(vehiculo);
     }
 
     public void insertar(Revision revision) throws OperationNotSupportedException {
-        clientes.buscar(revision.getCliente());
-        vehiculos.buscar(revision.getVehiculo());
-        revisiones.insertar(new Revision(revision));
+        Cliente cliente = clientes.buscar(revision.getCliente());
+        Vehiculo vehiculo = vehiculos.buscar(revision.getVehiculo());
+        revisiones.insertar(new Revision(cliente, vehiculo, revision.getFechaInicio()));
     }
 
     public Cliente buscar(Cliente cliente) {
-        return clientes.buscar(cliente);
+        cliente = Objects.requireNonNull(clientes.buscar(cliente), "No existe un cliente igual.");
+        return new Cliente(cliente);
     }
 
     public Vehiculo buscar(Vehiculo vehiculo) {
-        return vehiculos.buscar(vehiculo);
+        vehiculo = Objects.requireNonNull(vehiculos.buscar(vehiculo), "No existe un vehículo igual.");
+        return vehiculo;
     }
 
     public Revision buscar(Revision revision) {
-        return revisiones.buscar(revision);
+        revision = Objects.requireNonNull(revisiones.buscar(revision), "No existe una revisión igual.");
+        return new Revision(revision);
     }
 
     public boolean modificar(Cliente cliente, String nombre, String telefono) throws OperationNotSupportedException {
@@ -94,34 +100,32 @@ public class Modelo {
     }
 
     public List<Cliente> getClientes() {
-        List<Cliente> listaTemporal = new ArrayList<>();
+        List<Cliente> copiaClientes = new ArrayList<>();
         for (Cliente cliente : clientes.get()) {
-            listaTemporal.add(new Cliente(cliente));
+            copiaClientes.add(new Cliente(cliente));
         }
 
-        return listaTemporal;
+        return copiaClientes;
     }
 
     public List<Vehiculo> getVehiculos() {
-        List<Vehiculo> listaTemporal = vehiculos.get();
-        List<Vehiculo> vehiculosCopia = new ArrayList<>(listaTemporal);
-        return vehiculosCopia;
+        return vehiculos.get();
     }
 
     public List<Revision> getRevisiones() {
-        List<Revision> listaTemporal = new ArrayList<>();
+        List<Revision> copiaRevisiones = new ArrayList<>();
         for (Revision revision : revisiones.get()) {
-            listaTemporal.add(new Revision(revision));
+            copiaRevisiones.add(new Revision(revision));
         }
-        return listaTemporal;
+        return copiaRevisiones;
     }
 
     public List<Revision> getRevisiones(Cliente cliente) {
-        List<Revision> listaTemporal = new ArrayList<>();
+        List<Revision> revisionesCliente = new ArrayList<>();
         for (Revision revisionCliente : revisiones.get(cliente)) {
-            listaTemporal.add(new Revision(revisionCliente));
+            revisionesCliente.add(new Revision(revisionCliente));
         }
-        return listaTemporal;
+        return revisionesCliente;
     }
 
     public List<Revision> getRevisiones(Vehiculo vehiculo) {
