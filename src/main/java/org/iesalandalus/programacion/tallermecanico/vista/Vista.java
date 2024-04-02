@@ -40,7 +40,7 @@ public interface Vista {
 
     float leerPrecioMaterial();
 
-    void notificarEvento(Evento evento, String texto, boolean existo);
+    void notificarEvento(Evento evento, String texto, boolean exito);
 
     void mostrarCliente(Cliente cliente);
 

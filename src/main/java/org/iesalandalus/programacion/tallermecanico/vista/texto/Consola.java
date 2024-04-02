@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class Consola {
     private static final String CADENA_FORMATO_FECHA = "\\d{2}/\\d/\\d{4}";
 
-    public Consola() {
+    private Consola() {
     }
 
     public static void mostrarCabecera(String mensaje) {

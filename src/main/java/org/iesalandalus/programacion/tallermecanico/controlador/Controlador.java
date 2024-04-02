@@ -24,7 +24,6 @@ public class Controlador implements IControlador {
     @Override
     public void comenzar() {
         modelo.comenzar();
-        /* inicializa cosas*/
         vista.comenzar();
     }
 

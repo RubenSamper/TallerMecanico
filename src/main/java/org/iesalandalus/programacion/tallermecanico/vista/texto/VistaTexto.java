@@ -26,7 +26,7 @@ public class VistaTexto implements Vista {
     @Override
     public void comenzar() {
         Evento aux;
-        Consola.mostrarCabecera("-----Taller Mecánico------------");
+        Consola.mostrarCabecera("-----Taller Mecánico-----");
         do {
             Consola.mostrarMenu();
             aux = Consola.elegirOpcion();
@@ -118,8 +118,8 @@ public class VistaTexto implements Vista {
     }
 
     @Override
-    public void notificarEvento(Evento evento, String texto, boolean existo) {
-        if (existo) {
+    public void notificarEvento(Evento evento, String texto, boolean exito) {
+        if (exito) {
             System.out.println(texto);
         } else {
             System.out.println(evento + "ERROR:" + texto);
