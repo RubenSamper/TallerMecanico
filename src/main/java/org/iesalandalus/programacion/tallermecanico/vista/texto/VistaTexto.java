@@ -4,161 +4,180 @@ import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
 import org.iesalandalus.programacion.tallermecanico.vista.Vista;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.Evento;
 import org.iesalandalus.programacion.tallermecanico.vista.eventos.GestorEventos;
-import org.iesalandalus.programacion.utilidades.Entrada;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class VistaTexto implements Vista {
-    private final GestorEventos gestorEventos = new GestorEventos(Evento.values());
 
-    @Override
-    public LocalDate leerFechaCierre() {
-        return Consola.leerFecha("Dime la fecha fin de la revisión");
-    }
+    private final GestorEventos gestorEventos = new GestorEventos(Evento.values());
 
     @Override
     public GestorEventos getGestorEventos() {
         return gestorEventos;
     }
 
-
     @Override
     public void comenzar() {
-        Evento aux;
-        Consola.mostrarCabecera("-----Taller Mecánico-----");
+        Evento opcion;
         do {
             Consola.mostrarMenu();
-            aux = Consola.elegirOpcion();
-            ejecutar(aux);
-        } while (aux != Evento.SALIR);
+            opcion = Consola.elegirOpcion();
+            ejecutar(opcion);
+        } while (opcion != Evento.SALIR);
     }
 
+    private void ejecutar(Evento opcion) {
+        Consola.mostrarCabecera(opcion.toString());
+        gestorEventos.notificar(opcion);
+    }
 
     @Override
     public void terminar() {
-        System.out.println("Proceso terminado; ¡Hasta la próxima!");
-    }
-
-    private void ejecutar(Evento evento) {
-        Consola.mostrarCabecera("--- Taller Mecánico---");
-        gestorEventos.notificar(evento);
+        System.out.println("¡¡¡Hasta luego Lucasss!!!");
     }
 
     @Override
     public Cliente leerCliente() {
-
-        return new Cliente(leerNuevoNombre(), Consola.leerCadena("Dime el dni del cliente"), leerNuevoTelefono());
+        String nombre = Consola.leerCadena("Introduce el nombre: ");
+        String dni = Consola.leerCadena("Introduce el DNI: ");
+        String telefono = Consola.leerCadena("Introduce el teléfono: ");
+        return new Cliente(nombre, dni, telefono);
     }
 
     @Override
-    public Cliente leerClieneDni() {
-        return Cliente.get(Consola.leerCadena("Dime el dni del cliente"));
+    public Cliente leerClienteDni() {
+        return Cliente.get(Consola.leerCadena("Introduce el DNI: "));
     }
 
     @Override
     public String leerNuevoNombre() {
-        return Consola.leerCadena("Dime el nombre del cliente");
+        return Consola.leerCadena("Introduce el nuevo nombre: ");
     }
 
     @Override
     public String leerNuevoTelefono() {
-        System.out.println("Dime el nuevo telefono del cliente");
-        return Entrada.cadena();
+        return Consola.leerCadena("Introduce el nuevo teléfono: ");
     }
 
     @Override
     public Vehiculo leerVehiculo() {
-        System.out.println("Dime la marca del vehiculo");
-        String marca = Entrada.cadena();
-        System.out.println("Dime la matricula del vehiculo");
-        String matricula = Entrada.cadena();
-        System.out.println("Dime el modelo del vehiculo");
-        String modelo = Entrada.cadena();
+        String marca = Consola.leerCadena("Introduce la marca: ");
+        String modelo = Consola.leerCadena("Introduce el modelo: ");
+        String matricula = Consola.leerCadena("Introduce la matrícula: ");
         return new Vehiculo(marca, modelo, matricula);
     }
 
     @Override
-    public Vehiculo leerMatriculaVehiculo() {
-        System.out.println("Dime la matricula del vehiculo");
-        String matricula = Entrada.cadena();
-        return Vehiculo.get(matricula);
+    public Vehiculo leerVehiculoMatricula() {
+        return Vehiculo.get(Consola.leerCadena("Introduce la matrícula: "));
     }
 
     @Override
     public Trabajo leerRevision() {
-        System.out.print("Dime una revisión");
-
-        return new Revision(leerClieneDni(), leerMatriculaVehiculo(), Consola.leerFecha("Introduce la fecha de inicio"));
+        Cliente cliente = leerClienteDni();
+        Vehiculo vehiculo = leerVehiculoMatricula();
+        LocalDate fechaInicio = Consola.leerFecha("Introduce la fecha de inicio");
+        return new Revision(cliente, vehiculo, fechaInicio);
     }
 
     @Override
     public Trabajo leerMecanico() {
-        System.out.print("Dime un trabajo mecánico ");
-
-        return new Mecanico(leerClieneDni(), leerMatriculaVehiculo(), Consola.leerFecha("Introduce la fecha de inicio"));
+        Cliente cliente = leerClienteDni();
+        Vehiculo vehiculo = leerVehiculoMatricula();
+        LocalDate fechaInicio = Consola.leerFecha("Introduce la fecha de inicio");
+        return new Mecanico(cliente, vehiculo, fechaInicio);
     }
 
     @Override
     public Trabajo leerTrabajoVehiculo() {
-        System.out.println("Dime un trabajo de un vehiculo");
-        return new Mecanico(leerClieneDni(), leerVehiculo(), Consola.leerFecha("Dime la fecha de inciio."));
+        return Trabajo.get(leerVehiculoMatricula());
     }
 
     @Override
     public int leerHoras() {
-
-        return Consola.leerEntero("Dime la cantidad de horas");
+        return Consola.leerEntero("Introduce las horas a añadir: ");
     }
 
     @Override
     public float leerPrecioMaterial() {
-
-        return Consola.leerReal("Dime el precio material");
+        return Consola.leerReal("Introduce el precio del material a añadir: ");
     }
 
     @Override
-    public void notificarEvento(Evento evento, String texto, boolean exito) {
+    public LocalDate leerFechaCierre() {
+        return Consola.leerFecha("Introduce la fecha de cierre");
+    }
+
+    @Override
+    public LocalDate leerMes() { return Consola.leerFecha("Introduce la fecha correspondiente al mes que quieres visualizar"); }
+
+    @Override
+    public void notificarResultado(Evento evento, String texto, boolean exito) {
         if (exito) {
             System.out.println(texto);
         } else {
-            System.out.println(evento + "ERROR:" + texto);
+            System.out.printf("ERROR: %s%n", texto);
         }
     }
 
     @Override
     public void mostrarCliente(Cliente cliente) {
-        System.out.println(cliente);
+        System.out.println((cliente != null) ? cliente : "No existe ningún cliente con dicho DNI.");
     }
 
     @Override
-    public void mostrarVehiculos(Vehiculo vehiculo) {
-        System.out.println(vehiculo);
+    public void mostrarVehiculo(Vehiculo vehiculo) {
+        System.out.println((vehiculo != null) ? vehiculo : "No existe ningún vehículo con dicha matrícula.");
     }
 
     @Override
     public void mostrarTrabajo(Trabajo trabajo) {
-        System.out.println(trabajo);
+        System.out.println((trabajo != null) ? trabajo : "No existe ningún trabajo para ese cliente, vehículo y fecha.");
     }
 
     @Override
     public void mostrarClientes(List<Cliente> clientes) {
-        for (Cliente cliente : clientes) {
-            mostrarCliente(cliente);
+        if (!clientes.isEmpty()) {
+            clientes.sort(Comparator.comparing(Cliente::getNombre).thenComparing(Cliente::getDni));
+            for (Cliente cliente : clientes) {
+                System.out.println(cliente);
+            }
+        } else {
+            System.out.println("No hay clientes que mostrar.");
         }
     }
 
     @Override
     public void mostrarVehiculos(List<Vehiculo> vehiculos) {
-        for (Vehiculo vehiculo : vehiculos) {
-            mostrarVehiculos(vehiculo);
+        if (!vehiculos.isEmpty()) {
+            vehiculos.sort(Comparator.comparing(Vehiculo::marca).thenComparing(Vehiculo::modelo).thenComparing(Vehiculo::matricula));
+            for (Vehiculo vehiculo : vehiculos) {
+                System.out.println(vehiculo);
+            }
+        } else {
+            System.out.println("No hay vehículos que mostrar.");
         }
     }
 
     @Override
     public void mostrarTrabajos(List<Trabajo> trabajos) {
-        for (Trabajo trabajo : trabajos) {
-            System.out.println(trabajo);
+        if (!trabajos.isEmpty()) {
+            Comparator<Cliente> comparadorCliente = Comparator.comparing(Cliente::getNombre).thenComparing(Cliente::getDni);
+            trabajos.sort(Comparator.comparing(Trabajo::getFechaInicio).thenComparing(Trabajo::getCliente, comparadorCliente));
+            for (Trabajo trabajo : trabajos) {
+                System.out.println(trabajo);
+            }
+        } else {
+            System.out.println("No hay trabajos que mostrar.");
         }
     }
+
+    @Override
+    public void mostrarEstadisticasMensuales(Map<TipoTrabajo, Integer> estadisticas) {
+        System.out.printf("Tipos de trabajos realizados este mes: %s%n", estadisticas);
+    }
+
 }
