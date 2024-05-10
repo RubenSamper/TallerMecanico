@@ -1,18 +1,21 @@
-    package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
+package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
+import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
 
-    import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
+import javax.naming.OperationNotSupportedException;
+import java.util.List;
 
-    import javax.naming.OperationNotSupportedException;
-    import java.util.List;
+public interface IVehiculos {
 
-    public interface IVehiculos {
-        List<Vehiculo> get();
+    void comenzar();
 
-        void insertar(Vehiculo vehiculo) throws OperationNotSupportedException;
+    void terminar();
 
-        Vehiculo buscar(Vehiculo vehiculo);
+    List<Vehiculo> get();
 
-        void borrar(Vehiculo vehiculo) throws OperationNotSupportedException;
+    void insertar(Vehiculo vehiculo) throws OperationNotSupportedException;
 
-    }
+    Vehiculo buscar(Vehiculo vehiculo);
+
+    void borrar(Vehiculo vehiculo) throws OperationNotSupportedException;
+}

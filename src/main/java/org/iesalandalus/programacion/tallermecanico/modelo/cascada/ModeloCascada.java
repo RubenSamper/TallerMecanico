@@ -1,38 +1,43 @@
 package org.iesalandalus.programacion.tallermecanico.modelo.cascada;
 
-
 import org.iesalandalus.programacion.tallermecanico.modelo.Modelo;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.*;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IClientes;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ITrabajos;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.IVehiculos;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.memoria.FabricaFuenteDatos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.*;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class ModeloCascada implements Modelo {
-    private FabricaFuenteDatos fabricaFuenteDatos;
-
-    public ModeloCascada(FabricaFuenteDatos fabricaFuenteDatos) {
-        this.fabricaFuenteDatos = fabricaFuenteDatos;
-    }
     private IClientes clientes;
     private IVehiculos vehiculos;
     private ITrabajos trabajos;
+
+    public ModeloCascada(FabricaFuenteDatos fabricaFuenteDatos) {
+        Objects.requireNonNull(fabricaFuenteDatos, "La factoría de la fuente de datos no puede ser nula.");
+        IFuenteDatos fuenteDatos = fabricaFuenteDatos.crear();
+        clientes = fuenteDatos.crearClientes();
+        vehiculos = fuenteDatos.crearVehiculos();
+        trabajos = fuenteDatos.crearTrabajos();
+    }
+
     @Override
     public void comenzar() {
-        clientes = fabricaFuenteDatos.crear().crearClientes();
-        vehiculos = fabricaFuenteDatos.crear().crearVehiculo();
-        trabajos = fabricaFuenteDatos.crear().crearTrabajo();
+        clientes.comenzar();
+        vehiculos.comenzar();
+        trabajos.comenzar();
+        System.out.println("Modelo comenzado.");
     }
 
     @Override
     public void terminar() {
-        System.out.println("Fin");
+        trabajos.terminar();
+        vehiculos.terminar();
+        clientes.terminar();
+        System.out.println("Modelo terminado.");
     }
 
     @Override
@@ -49,11 +54,12 @@ public class ModeloCascada implements Modelo {
     public void insertar(Trabajo trabajo) throws OperationNotSupportedException {
         Cliente cliente = clientes.buscar(trabajo.getCliente());
         Vehiculo vehiculo = vehiculos.buscar(trabajo.getVehiculo());
-        if (trabajo instanceof Mecanico){
-            trabajos.insertar(new Mecanico(cliente,vehiculo,trabajo.getFechaInicio()));
-        }if (trabajo instanceof Revision){
-            trabajos.insertar(new Revision(cliente,vehiculo,trabajo.getFechaInicio()));        }
-
+        if (trabajo instanceof Revision) {
+            trabajo = new Revision(cliente, vehiculo, trabajo.getFechaInicio());
+        } else {
+            trabajo = new Mecanico(cliente, vehiculo, trabajo.getFechaInicio());
+        }
+        trabajos.insertar(trabajo);
     }
 
     @Override
@@ -64,14 +70,14 @@ public class ModeloCascada implements Modelo {
 
     @Override
     public Vehiculo buscar(Vehiculo vehiculo) {
-        return vehiculos.buscar(vehiculo);
+        vehiculo = Objects.requireNonNull(vehiculos.buscar(vehiculo), "No existe un vehículo igual.");
+        return vehiculo;
     }
 
     @Override
     public Trabajo buscar(Trabajo trabajo) {
-        trabajo = Objects.requireNonNull(trabajos.buscar(trabajo), "No existe un cliente igual.");
+        trabajo = Objects.requireNonNull(trabajos.buscar(trabajo), "No existe un trabajo igual.");
         return Trabajo.copiar(trabajo);
-
     }
 
     @Override
@@ -96,7 +102,8 @@ public class ModeloCascada implements Modelo {
 
     @Override
     public void borrar(Cliente cliente) throws OperationNotSupportedException {
-        for (Trabajo trabajo : trabajos.get(cliente)) {
+        List<Trabajo> trabajosCliente = trabajos.get(cliente);
+        for (Trabajo trabajo : trabajosCliente) {
             trabajos.borrar(trabajo);
         }
         clientes.borrar(cliente);
@@ -104,7 +111,8 @@ public class ModeloCascada implements Modelo {
 
     @Override
     public void borrar(Vehiculo vehiculo) throws OperationNotSupportedException {
-        for (Trabajo trabajo : trabajos.get(vehiculo)) {
+        List<Trabajo> trabajosVehiculo = trabajos.get(vehiculo);
+        for (Trabajo trabajo : trabajosVehiculo) {
             trabajos.borrar(trabajo);
         }
         vehiculos.borrar(vehiculo);
@@ -117,43 +125,48 @@ public class ModeloCascada implements Modelo {
 
     @Override
     public List<Cliente> getClientes() {
-        ArrayList<Cliente> listaClientes = new ArrayList<>();
+        List<Cliente> copiaClientes = new ArrayList<>();
         for (Cliente cliente : clientes.get()) {
-            listaClientes.add(new Cliente(cliente));
+            copiaClientes.add(new Cliente(cliente));
         }
-        return listaClientes;
+        return copiaClientes;
     }
 
     @Override
     public List<Vehiculo> getVehiculos() {
-        return new ArrayList<>(vehiculos.get());
+        return vehiculos.get();
     }
 
     @Override
     public List<Trabajo> getTrabajos() {
-        ArrayList<Trabajo> listaTrabajos = new ArrayList<>();
+        List<Trabajo> copiaTrabajos = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get()) {
-            listaTrabajos.add(Trabajo.copiar(trabajo));
+            copiaTrabajos.add(Trabajo.copiar(trabajo));
         }
-        return listaTrabajos;
+        return copiaTrabajos;
     }
 
     @Override
     public List<Trabajo> getTrabajos(Cliente cliente) {
-        ArrayList<Trabajo> listaTrabajosIgualCliente = new ArrayList<>();
+        List<Trabajo> trabajosCliente = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get(cliente)) {
-            listaTrabajosIgualCliente.add(Trabajo.copiar(trabajo));
+            trabajosCliente.add(Trabajo.copiar(trabajo));
         }
-
-        return listaTrabajosIgualCliente;
+        return trabajosCliente;
     }
+
     @Override
     public List<Trabajo> getTrabajos(Vehiculo vehiculo) {
-        ArrayList<Trabajo> listaTrabajosIgualVehiculo = new ArrayList<>();
+        List<Trabajo> trabajosCliente = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get(vehiculo)) {
-            listaTrabajosIgualVehiculo.add(Trabajo.copiar(trabajo));
+            trabajosCliente.add(Trabajo.copiar(trabajo));
         }
-
-        return listaTrabajosIgualVehiculo;
+        return trabajosCliente;
     }
+
+    @Override
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) {
+        return trabajos.getEstadisticasMensuales(mes);
+    }
+
 }
