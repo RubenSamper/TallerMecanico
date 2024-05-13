@@ -56,6 +56,26 @@ public interface Vista {
 
     void mostrarTrabajos(List<Trabajo> trabajoes);
 
+    default void notificarResultado(Evento evento, String texto, boolean exito, Cliente cliente) {
+        notificarResultado(evento, texto, exito);
+    }
+
+    default void notificarResultado(Evento evento, String texto, boolean exito, Vehiculo vehiculo) {
+        notificarResultado(evento, texto, exito);
+    }
+
+    default void notificarResultado(Evento evento, String texto, boolean exito, Trabajo trabajo) {
+        notificarResultado(evento, texto, exito);
+    }
+
     void mostrarEstadisticasMensuales(Map<TipoTrabajo, Integer> estadisticas);
+
+    default void mostrarTrabajosCliente(List<Trabajo> trabajos) {
+        mostrarTrabajos(trabajos);
+    }
+
+    default void mostrarTrabajosVehiculo(List<Trabajo> trabajos) {
+        mostrarTrabajos(trabajos);
+    }
 
 }
