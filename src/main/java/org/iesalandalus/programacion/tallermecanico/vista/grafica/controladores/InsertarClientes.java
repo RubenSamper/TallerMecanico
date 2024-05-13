@@ -49,16 +49,16 @@ public class InsertarClientes extends Controlador {
         String dni = tfDni.getText();
         String telefono = tfTelefono.getText();
 
-        if (nombre.isEmpty() || dni.isEmpty() || telefono.isEmpty()) {
-            mostrarError("Campos incompletos", "Por favor, completa todos los campos.");
-            return;
-        }
-
-        Cliente nuevoCliente = new Cliente(nombre, dni, telefono);
-
         try {
+            Cliente nuevoCliente = new Cliente(nombre, dni, telefono);
+
             clientes.insertar(nuevoCliente);
+            Clientes.getInstancia().terminar();
+
+
             mostrarInformacion("Cliente insertado", "Cliente insertado correctamente.");
+        } catch (IllegalArgumentException e) {
+            mostrarError("Error al insertar cliente", e.getMessage());
         } catch (OperationNotSupportedException e) {
             mostrarError("Error al insertar cliente", e.getMessage());
         }

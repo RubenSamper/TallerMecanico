@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class Clientes implements IClientes {
 
-    private static final String FICHERO_CLIENTES = String.format("%s%s%s", "datos", File.separator, "clientes.xml");
+    private static final String FICHERO_CLIENTES = String.format("%s%s%s", "datos", File.separator, "Clientes.xml");
     private static final String RAIZ = "clientes";
     private static final String CLIENTE = "cliente";
     private static final String NOMBRE = "nombre";
