@@ -40,6 +40,8 @@ public class InsertarClientes extends Controlador {
 
     @FXML
     void insertarCliente(ActionEvent event) {
+
+
         if (clientes == null) {
             mostrarError("Error de inicialización", "El objeto Clientes no se ha inicializado correctamente.");
             return;
@@ -80,5 +82,9 @@ public class InsertarClientes extends Controlador {
         dialogo.setContentText(mensaje);
 
         dialogo.showAndWait();
+    }
+
+    public Cliente getCliente() {
+        return new Cliente(tfNombre.getText(), tfDni.getText(), tfTelefono.getText());
     }
 }

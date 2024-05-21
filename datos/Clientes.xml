@@ -2,8 +2,8 @@
 <clientes>
     <cliente dni="11223344B" nombre="Bob Esponja" telefono="950112233"/>
     <cliente dni="11111111H" nombre="Patricio Estrella" telefono="950111111"/>
-    <cliente dni="78018163R" nombre="Ruben" telefono="684232981"/>
     <cliente dni="12345678Z" nombre="Jinx" telefono="123456789"/>
-    <cliente dni="99999999R" nombre="Yasuo" telefono="684232988"/>
-    <cliente dni="77777777B" nombre="Talon" telefono="683232871"/>
+    <cliente dni="99999999R" nombre="Talon" telefono="684232911"/>
+    <cliente dni="78018163R" nombre="Ruben" telefono="684232981"/>
+    <cliente dni="76657112K" nombre="Angel" telefono="682344563"/>
 </clientes>

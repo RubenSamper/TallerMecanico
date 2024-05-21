@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<trabajos>
-    <trabajo cliente="11223344B" fechaFin="07/03/2024" fechaInicio="01/03/2024" horas="10" tipo="revision" vehiculo="3333DDD"/>
-    <trabajo cliente="11111111H" fechaFin="14/03/2024" fechaInicio="10/03/2024" tipo="revision" vehiculo="1111BBB"/>
-    <trabajo cliente="11223344B" fechaFin="16/03/2024" fechaInicio="10/03/2024" horas="5" tipo="mecanico" vehiculo="1234BCD"/>
-    <trabajo cliente="11111111H" fechaInicio="15/03/2024" precioMaterial="125.500000" tipo="mecanico" vehiculo="2222CCC"/>
-</trabajos>
+<vehiculos>
+    <vehiculo marca="Scania" matricula="1234BCD" modelo="Citywide"/>
+    <vehiculo marca="Seat" matricula="1111BBB" modelo="León"/>
+    <vehiculo marca="Renault" matricula="2222CCC" modelo="Megane"/>
+    <vehiculo marca="Mercedes-Benz" matricula="3333DDD" modelo="eSprinter"/>
+</vehiculos>

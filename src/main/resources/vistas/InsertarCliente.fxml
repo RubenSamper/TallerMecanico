@@ -28,17 +28,17 @@
             <Label text="Telefono" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
             <TextField fx:id="tfNombre" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                <GridPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="300.0" top="10.0" />
                </GridPane.margin>
             </TextField>
             <TextField fx:id="tfDni" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="300.0" top="10.0" />
                </GridPane.margin>
             </TextField>
             <TextField fx:id="tfTelefono" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="300.0" top="10.0" />
                </GridPane.margin>
             </TextField>
          </children>
