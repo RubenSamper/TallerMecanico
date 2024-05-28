@@ -5,8 +5,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Vehiculos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb.Vehiculos;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controladores;
 

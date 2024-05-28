@@ -1,22 +1,18 @@
 package org.iesalandalus.programacion.tallermecanico.vista.grafica.controladores;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb.Clientes;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 
 import javax.naming.OperationNotSupportedException;
 
 public class InsertarClientes extends Controlador {
-    private Clientes clientes;
 
-    public void inicializarClientes(Clientes clientes) {
-        this.clientes = clientes;
-    }
+    private Clientes clientes;
 
     @FXML
     private Button btAceptar;
@@ -33,6 +29,10 @@ public class InsertarClientes extends Controlador {
     @FXML
     private TextField tfTelefono;
 
+    public void inicializarClientes(Clientes clientes) {
+        this.clientes = clientes;
+    }
+
     @FXML
     void cerrarVentana(ActionEvent event) {
         getEscenario().close();
@@ -40,30 +40,37 @@ public class InsertarClientes extends Controlador {
 
     @FXML
     void insertarCliente(ActionEvent event) {
-
-
-        if (clientes == null) {
-            mostrarError("Error de inicialización", "El objeto Clientes no se ha inicializado correctamente.");
-            return;
-        }
-
         String nombre = tfNombre.getText();
         String dni = tfDni.getText();
         String telefono = tfTelefono.getText();
 
-        try {
-            Cliente nuevoCliente = new Cliente(nombre, dni, telefono);
-
-            clientes.insertar(nuevoCliente);
-            Clientes.getInstancia().terminar();
-
-
-            mostrarInformacion("Cliente insertado", "Cliente insertado correctamente.");
-        } catch (IllegalArgumentException e) {
-            mostrarError("Error al insertar cliente", e.getMessage());
-        } catch (OperationNotSupportedException e) {
-            mostrarError("Error al insertar cliente", e.getMessage());
+        if (validarDatos(nombre, dni, telefono)) {
+            try {
+                Cliente nuevoCliente = new Cliente(nombre, dni, telefono);
+                clientes.insertar(nuevoCliente);
+                mostrarInformacion("Cliente insertado", "Cliente insertado correctamente.");
+            } catch (IllegalArgumentException e) {
+                mostrarError("Error al insertar cliente", e.getMessage());
+            } catch (OperationNotSupportedException e) {
+                mostrarError("Error al insertar cliente", e.getMessage());
+            }
         }
+    }
+
+    private boolean validarDatos(String nombre, String dni, String telefono) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            mostrarError("Datos inválidos", "El nombre no puede estar vacío.");
+            return false;
+        }
+        if (dni == null || dni.trim().isEmpty()) {
+            mostrarError("Datos inválidos", "El DNI no puede estar vacío.");
+            return false;
+        }
+        if (telefono == null || telefono.trim().isEmpty()) {
+            mostrarError("Datos inválidos", "El teléfono no puede estar vacío.");
+            return false;
+        }
+        return true;
     }
 
     private void mostrarError(String titulo, String mensaje) {
@@ -71,7 +78,6 @@ public class InsertarClientes extends Controlador {
         dialogo.setTitle("ERROR: " + titulo);
         dialogo.setHeaderText(null);
         dialogo.setContentText(mensaje);
-
         dialogo.showAndWait();
     }
 
@@ -80,11 +86,6 @@ public class InsertarClientes extends Controlador {
         dialogo.setTitle(titulo);
         dialogo.setHeaderText(null);
         dialogo.setContentText(mensaje);
-
         dialogo.showAndWait();
-    }
-
-    public Cliente getCliente() {
-        return new Cliente(tfNombre.getText(), tfDni.getText(), tfTelefono.getText());
     }
 }

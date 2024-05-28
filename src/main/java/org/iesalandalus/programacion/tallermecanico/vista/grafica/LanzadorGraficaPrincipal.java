@@ -15,8 +15,14 @@ public class LanzadorGraficaPrincipal extends Application {
 
         Controlador graficaPrincipal = Controladores.get("/vistas/GraficaPrincipal.fxml", "Taller Mecánico", null);
         graficaPrincipal.getEscenario().show();
-
     }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        Clientes.getInstancia().terminar();
+    }
+
     public static void comenzar() {
         launch(LanzadorGraficaPrincipal.class);
     }

@@ -60,7 +60,7 @@ public class Vehiculos implements IVehiculos {
     public List<Vehiculo> get() {
         List<Vehiculo> vehiculos = new ArrayList<>();
         try (Statement sentencia = conexion.createStatement()) {
-            ResultSet filas = sentencia.executeQuery("select * from clientes");
+            ResultSet filas = sentencia.executeQuery("select * from vehiculos");
             while (filas.next()) {
                 vehiculos.add(getVehiculo(filas));
             }
@@ -72,12 +72,12 @@ public class Vehiculos implements IVehiculos {
 
     @Override
     public void insertar(Vehiculo vehiculo) throws OperationNotSupportedException {
-        Objects.requireNonNull(vehiculo, "No se puede insertar un cliente nulo.");
-        try (PreparedStatement sentencia = conexion.prepareStatement("insert into clientes values (?, ?, ?)")) {
+        Objects.requireNonNull(vehiculo, "No se puede insertar un vehiculo nulo.");
+        try (PreparedStatement sentencia = conexion.prepareStatement("insert into vehiculos values (?, ?, ?)")) {
             prepararSentencia(sentencia, vehiculo);
             sentencia.execute();
         } catch (SQLIntegrityConstraintViolationException e) {
-            throw new OperationNotSupportedException("Ya existe un cliente con ese DNI.");
+            throw new OperationNotSupportedException("Ya existe un vehiculo con esa matricula.");
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -85,8 +85,8 @@ public class Vehiculos implements IVehiculos {
 
     @Override
     public Vehiculo buscar(Vehiculo vehiculo) {
-        Objects.requireNonNull(vehiculo, "No se puede buscar un cliente nulo.");
-        try (PreparedStatement sentencia = conexion.prepareStatement("select * from clientes where dni = ? ")) {
+        Objects.requireNonNull(vehiculo, "No se puede buscar un vehiculo nulo.");
+        try (PreparedStatement sentencia = conexion.prepareStatement("select * from vehiculos where matricula = ? ")) {
             sentencia.setString(1, vehiculo.matricula());
             ResultSet filas = sentencia.executeQuery();
             vehiculo = filas.first() ? getVehiculo(filas) : null;
@@ -98,12 +98,12 @@ public class Vehiculos implements IVehiculos {
 
     @Override
     public void borrar(Vehiculo vehiculo) throws OperationNotSupportedException {
-        Objects.requireNonNull(vehiculo, "No se puede borrar un cliente nulo.");
-        try (PreparedStatement sentencia = conexion.prepareStatement("delete from clientes where dni = ?")) {
+        Objects.requireNonNull(vehiculo, "No se puede borrar un vehiculo nulo.");
+        try (PreparedStatement sentencia = conexion.prepareStatement("delete from vehiculos where matricula = ?")) {
             sentencia.setString(1, vehiculo.matricula());
             int filas = sentencia.executeUpdate();
             if (filas == 0) {
-                throw new OperationNotSupportedException("No existe ningún cliente con ese DNI.");
+                throw new OperationNotSupportedException("No existe ningún vehiculo con esa MATRICULA.");
             }
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

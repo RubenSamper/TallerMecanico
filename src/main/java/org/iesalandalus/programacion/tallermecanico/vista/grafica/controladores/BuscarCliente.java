@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb.Clientes;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controladores;
 
@@ -19,36 +19,28 @@ public class BuscarCliente extends Controlador {
     private TableView<Cliente> tClienteBuscado;
     @FXML
     private TableColumn<Cliente, String> cDni;
-
     @FXML
     private TableColumn<Cliente, String> cNombre;
-
     @FXML
     private TableColumn<Cliente, String> cTelefono;
-
     @FXML
     private Button btBorrar;
-
     @FXML
     private Button btBuscar;
-
     @FXML
     private Button btCerrar;
-
     @FXML
     private Button btModificar;
     @FXML
     private Button btActualizar;
     @FXML
     private TextField tfDni;
-    ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
-
+    private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
         inicializarTabla();
         cargarClientes();
-
     }
 
     private void inicializarTabla() {
@@ -59,13 +51,8 @@ public class BuscarCliente extends Controlador {
 
     private void cargarClientes() {
         List<Cliente> clientes = Clientes.getInstancia().get();
-        listaClientes = FXCollections.observableArrayList(clientes);
+        listaClientes.setAll(clientes);
         tClienteBuscado.setItems(listaClientes);
-    }
-
-    public void actualizarTabla() {
-        listaClientes.clear();
-        listaClientes.addAll(Clientes.getInstancia().get());
     }
 
     @FXML
@@ -74,8 +61,7 @@ public class BuscarCliente extends Controlador {
         if (!dniBuscado.isEmpty()) {
             Cliente clienteEncontrado = Clientes.getInstancia().buscar(new Cliente("Ruben", dniBuscado, "684232981"));
             if (clienteEncontrado != null) {
-                listaClientes.clear();
-                listaClientes.add(clienteEncontrado);
+                listaClientes.setAll(clienteEncontrado);
             } else {
                 mostrarInformacion("Cliente no encontrado", "No se ha encontrado ningún cliente con el DNI especificado.");
             }
@@ -87,15 +73,6 @@ public class BuscarCliente extends Controlador {
     @FXML
     void cerrarVentana(ActionEvent event) {
         getEscenario().close();
-    }
-
-    private void mostrarInformacion(String titulo, String mensaje) {
-        Alert dialogo = new Alert(Alert.AlertType.INFORMATION);
-        dialogo.setTitle(titulo);
-        dialogo.setHeaderText(null);
-        dialogo.setContentText(mensaje);
-
-        dialogo.showAndWait();
     }
 
     @FXML
@@ -116,12 +93,12 @@ public class BuscarCliente extends Controlador {
         if (clienteSeleccionado != null) {
             try {
                 Clientes.getInstancia().borrar(clienteSeleccionado);
-                Clientes.getInstancia().terminar();
-
-                listaClientes.remove(clienteSeleccionado);
+                cargarClientes();
             } catch (Exception e) {
-                e.printStackTrace();
+                mostrarError("Error al borrar cliente", "Se ha producido un error al intentar borrar el cliente.");
             }
+        } else {
+            mostrarError("Error", "Debes seleccionar un cliente para borrar.");
         }
     }
 
@@ -131,6 +108,15 @@ public class BuscarCliente extends Controlador {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    private void mostrarInformacion(String titulo, String mensaje) {
+        Alert dialogo = new Alert(Alert.AlertType.INFORMATION);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
+        dialogo.setContentText(mensaje);
+
+        dialogo.showAndWait();
     }
 
     @FXML

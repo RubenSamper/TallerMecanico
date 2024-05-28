@@ -10,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb.Clientes;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controladores;
 
@@ -40,14 +40,16 @@ public class MostrarClientes extends Controlador {
     @FXML
     private TableColumn<Cliente, String> cTelefono;
 
-    ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
+    private ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
+    private Clientes clientes;
 
     @FXML
     private void initialize() {
+        clientes = Clientes.getInstancia();  // Obtener la instancia correcta
+        clientes.comenzar();  // Asegúrate de comenzar la conexión con MongoDB
         inicializarTabla();
         cargarClientes();
         btActualizar.setOnAction(event -> actualizarTabla());
-
     }
 
     private void inicializarTabla() {
@@ -57,14 +59,14 @@ public class MostrarClientes extends Controlador {
     }
 
     private void cargarClientes() {
-        List<Cliente> clientes = Clientes.getInstancia().get();
-        listaClientes = FXCollections.observableArrayList(clientes);
-        tClientes.setItems(listaClientes);
+        List<Cliente> listaClientes = clientes.get();
+        this.listaClientes = FXCollections.observableArrayList(listaClientes);
+        tClientes.setItems(this.listaClientes);
     }
 
     public void actualizarTabla() {
         listaClientes.clear();
-        listaClientes.addAll(Clientes.getInstancia().get());
+        listaClientes.addAll(clientes.get());
     }
 
     @FXML
@@ -72,12 +74,10 @@ public class MostrarClientes extends Controlador {
         Cliente clienteSeleccionado = tClientes.getSelectionModel().getSelectedItem();
         if (clienteSeleccionado != null) {
             try {
-                Clientes.getInstancia().borrar(clienteSeleccionado);
-                Clientes.getInstancia().terminar();
-
+                clientes.borrar(clienteSeleccionado);
                 listaClientes.remove(clienteSeleccionado);
             } catch (Exception e) {
-                e.printStackTrace();
+                mostrarError("Error al borrar cliente", e.getMessage());
             }
         }
     }
@@ -100,11 +100,6 @@ public class MostrarClientes extends Controlador {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
-    }
-
-    @FXML
-    void actualizarTabla(ActionEvent event) {
-        cargarClientes();
     }
 
     @FXML
