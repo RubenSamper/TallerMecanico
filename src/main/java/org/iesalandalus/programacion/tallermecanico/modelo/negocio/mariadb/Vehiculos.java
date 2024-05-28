@@ -22,7 +22,7 @@ public class Vehiculos implements IVehiculos {
     private Connection conexion;
     private static Vehiculos instancia;
 
-    static Vehiculos getInstancia() {
+    public static Vehiculos getInstancia() {
         if (instancia == null) {
             instancia = new Vehiculos();
         }

@@ -1,12 +1,11 @@
 package org.iesalandalus.programacion.tallermecanico.vista.grafica.controladores;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Vehiculo;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Vehiculos;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mariadb.Vehiculos;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 
 import javax.naming.OperationNotSupportedException;
@@ -43,7 +42,7 @@ public class InsertarVehiculo extends Controlador {
     @FXML
     void insertarVehiculo(ActionEvent event) {
         if (vehiculos == null) {
-            mostrarError("Error de inicialización", "El objeto Clientes no se ha inicializado correctamente.");
+            mostrarError("Error de inicialización", "El objeto Vehiculos no se ha inicializado correctamente.");
             return;
         }
 
@@ -55,9 +54,6 @@ public class InsertarVehiculo extends Controlador {
             Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, matricula);
 
             vehiculos.insertar(nuevoVehiculo);
-            Vehiculos.getInstancia().terminar();
-
-
             mostrarInformacion("Vehiculo insertado", "Vehiculo insertado correctamente.");
         } catch (IllegalArgumentException e) {
             mostrarError("Error al insertar vehiculo", e.getMessage());
