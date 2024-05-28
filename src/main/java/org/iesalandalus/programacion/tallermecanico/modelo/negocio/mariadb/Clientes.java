@@ -23,7 +23,7 @@ public class Clientes implements IClientes {
     private Connection conexion;
     private static Clientes instancia;
 
-    static Clientes getInstancia() {
+    public static Clientes getInstancia() {
         if (instancia == null) {
             instancia = new Clientes();
         }

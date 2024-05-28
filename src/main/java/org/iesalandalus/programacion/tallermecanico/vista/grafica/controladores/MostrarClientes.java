@@ -10,7 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mariadb.Clientes;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controladores;
 
@@ -28,6 +28,7 @@ public class MostrarClientes extends Controlador {
 
     @FXML
     private Button btBuscarCliente;
+
     @FXML
     private TableView<Cliente> tClientes;
 
@@ -40,14 +41,12 @@ public class MostrarClientes extends Controlador {
     @FXML
     private TableColumn<Cliente, String> cTelefono;
 
-    ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
+    private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
         inicializarTabla();
         cargarClientes();
-        btActualizar.setOnAction(event -> actualizarTabla());
-
     }
 
     private void inicializarTabla() {
@@ -58,13 +57,8 @@ public class MostrarClientes extends Controlador {
 
     private void cargarClientes() {
         List<Cliente> clientes = Clientes.getInstancia().get();
-        listaClientes = FXCollections.observableArrayList(clientes);
+        listaClientes.addAll(clientes);
         tClientes.setItems(listaClientes);
-    }
-
-    public void actualizarTabla() {
-        listaClientes.clear();
-        listaClientes.addAll(Clientes.getInstancia().get());
     }
 
     @FXML
@@ -73,12 +67,13 @@ public class MostrarClientes extends Controlador {
         if (clienteSeleccionado != null) {
             try {
                 Clientes.getInstancia().borrar(clienteSeleccionado);
-                Clientes.getInstancia().terminar();
-
                 listaClientes.remove(clienteSeleccionado);
+                mostrarInformacion("Cliente borrado", "El cliente ha sido borrado correctamente.");
             } catch (Exception e) {
-                e.printStackTrace();
+                mostrarError("Error al borrar cliente", "Se ha producido un error al intentar borrar el cliente.");
             }
+        } else {
+            mostrarError("Error", "Debes seleccionar un cliente para borrar.");
         }
     }
 
@@ -102,8 +97,17 @@ public class MostrarClientes extends Controlador {
         alerta.showAndWait();
     }
 
+    private void mostrarInformacion(String titulo, String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        alerta.showAndWait();
+    }
+
     @FXML
     void actualizarTabla(ActionEvent event) {
+        listaClientes.clear();
         cargarClientes();
     }
 

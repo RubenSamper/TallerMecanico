@@ -6,12 +6,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.iesalandalus.programacion.tallermecanico.modelo.dominio.Cliente;
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.Clientes;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.mariadb.Clientes;
 import org.iesalandalus.programacion.tallermecanico.vista.grafica.utilidades.Controlador;
 
 import javax.naming.OperationNotSupportedException;
 
 public class ModificarCliente extends Controlador {
+
     @FXML
     private Button btAceptar;
 
@@ -42,16 +43,9 @@ public class ModificarCliente extends Controlador {
 
         try {
             Clientes.getInstancia().modificar(clienteAModificar, nombre, telefono);
-
-            Clientes.getInstancia().terminar();
-
             mostrarInformacion("Cliente modificado", "El cliente se ha modificado correctamente.");
-
-
             getEscenario().close();
-        } catch (IllegalArgumentException e) {
-            mostrarError("Error al modificar cliente", e.getMessage());
-        } catch (OperationNotSupportedException e) {
+        } catch (IllegalArgumentException | OperationNotSupportedException e) {
             mostrarError("Error al modificar cliente", e.getMessage());
         }
     }
